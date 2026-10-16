@@ -96,7 +96,7 @@ with tab2:
         
     if st.button("Train RNN Model"):
         with st.spinner("Generating data and training RNN..."):
-            X, y = generate_synthetic_sequences(n_samples=500, seq_len=10)
+            X, y = generate_synthetic_sequences(n=500, seq_len=10)
             model, train_losses = train_rnn(X, y, hidden_size=hidden_size, epochs=epochs, lr=0.01)
             
             st.success("Training Complete!")

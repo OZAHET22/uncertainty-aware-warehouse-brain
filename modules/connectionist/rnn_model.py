@@ -9,11 +9,11 @@ from torch.utils.data import DataLoader, TensorDataset
 
 
 class AnomalyRNN(nn.Module):
-    def __init__(self):
+    def __init__(self, hidden_size=16):
         super(AnomalyRNN, self).__init__()
         # Input features: 3 (e.g., vibration, current, temperature)
-        self.lstm = nn.LSTM(input_size=3, hidden_size=16, batch_first=True)
-        self.linear = nn.Linear(16, 1)
+        self.lstm = nn.LSTM(input_size=3, hidden_size=hidden_size, batch_first=True)
+        self.linear = nn.Linear(hidden_size, 1)
         self.sigmoid = nn.Sigmoid()
 
     def forward(self, x):
@@ -71,11 +71,12 @@ def generate_synthetic_sequences(n: int = 500, seq_len: int = 10, seed: int = 42
     return np.array(X, dtype=np.float32), np.array(y, dtype=np.float32).reshape(-1, 1)
 
 
-def train_rnn() -> AnomalyRNN:
+def train_rnn(X=None, y=None, hidden_size=16, epochs=20, lr=0.01) -> tuple[AnomalyRNN, list]:
     """
     Train the RNN model.
     """
-    X, y = generate_synthetic_sequences()
+    if X is None or y is None:
+        X, y = generate_synthetic_sequences()
 
     # Simple split
     split_idx = int(0.8 * len(X))
@@ -85,21 +86,24 @@ def train_rnn() -> AnomalyRNN:
     train_dataset = TensorDataset(torch.tensor(X_train), torch.tensor(y_train))
     train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
 
-    model = AnomalyRNN()
+    model = AnomalyRNN(hidden_size=hidden_size)
     criterion = nn.BCELoss()
-    optimizer = optim.Adam(model.parameters(), lr=0.01)
+    optimizer = optim.Adam(model.parameters(), lr=lr)
 
-    epochs = 20
+    train_losses = []
     for epoch in range(epochs):
         model.train()
+        epoch_loss = 0.0
         for batch_x, batch_y in train_loader:
             optimizer.zero_grad()
             outputs = model(batch_x)
             loss = criterion(outputs, batch_y)
             loss.backward()
             optimizer.step()
+            epoch_loss += loss.item()
+        train_losses.append(epoch_loss / len(train_loader))
 
-    return model
+    return model, train_losses
 
 
 def rnn_predict_anomaly(window: list[dict], model: AnomalyRNN = None) -> bool:
@@ -108,7 +112,9 @@ def rnn_predict_anomaly(window: list[dict], model: AnomalyRNN = None) -> bool:
     window: List of dicts, each with 'vibration', 'current', 'temperature'.
     """
     if model is None:
-        model = train_rnn()
+        model, _ = train_rnn()
+    elif isinstance(model, tuple):
+        model = model[0]
 
     model.eval()
 
