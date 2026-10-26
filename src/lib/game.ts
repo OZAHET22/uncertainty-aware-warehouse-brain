@@ -297,12 +297,21 @@ export function simulateDockGame(
   };
 }
 
+let cachedBenchmark: {
+  depths: number[];
+  minimax: number[];
+  alphabeta: number[];
+  ids: number[];
+} | null = null;
+
 export function runBenchmark(): {
   depths: number[];
   minimax: number[];
   alphabeta: number[];
   ids: number[];
 } {
+  if (cachedBenchmark) return cachedBenchmark;
+
   const depths = [1, 2, 3, 4, 5, 6];
   const mmNodes: number[] = [];
   const abNodes: number[] = [];
@@ -318,10 +327,12 @@ export function runBenchmark(): {
     idsNodes.push(idsCount);
   }
 
-  return {
+  cachedBenchmark = {
     depths,
     minimax: mmNodes,
     alphabeta: abNodes,
     ids: idsNodes,
   };
+
+  return cachedBenchmark;
 }

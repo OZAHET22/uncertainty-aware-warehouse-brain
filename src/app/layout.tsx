@@ -1,8 +1,16 @@
 // src/app/layout.tsx
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { Navigation } from '@/components/Navigation';
 import { Header } from '@/components/Header';
+import { NavigationProvider } from '@/components/NavigationContext';
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: '#07090e',
+};
 
 export const metadata: Metadata = {
   title: 'Warehouse Robot Brain — Autonomous Intelligence Studio',
@@ -19,6 +27,10 @@ export const metadata: Metadata = {
     'Hopfield Network',
     'Expert System',
   ],
+  authors: [{ name: 'Robotics Intelligence Team' }],
+  icons: {
+    icon: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({
@@ -29,15 +41,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <div style={{ display: 'flex', minHeight: '100vh' }}>
-          <Navigation />
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
-            <Header />
-            <main style={{ flex: 1, padding: '32px', maxWidth: '1600px', width: '100%', margin: '0 auto' }}>
-              {children}
-            </main>
+        <NavigationProvider>
+          <div className="app-layout-container">
+            <Navigation />
+            <div className="app-main-wrapper">
+              <Header />
+              <main className="app-content-area">
+                {children}
+              </main>
+            </div>
           </div>
-        </div>
+        </NavigationProvider>
       </body>
     </html>
   );

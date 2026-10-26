@@ -1,6 +1,7 @@
-// src/app/api/game/route.ts
 import { NextResponse } from 'next/server';
 import { simulateDockGame, runBenchmark } from '@/lib/game';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET() {
   const benchmark = runBenchmark();

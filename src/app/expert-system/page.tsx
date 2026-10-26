@@ -5,13 +5,8 @@ import React, { useState } from 'react';
 import {
   Wrench,
   CheckCircle2,
-  AlertTriangle,
   Play,
   PlusCircle,
-  BookOpen,
-  Filter,
-  Layers,
-  ArrowRight,
   ShieldAlert,
 } from 'lucide-react';
 import {
@@ -126,59 +121,70 @@ export default function ExpertSystemPage() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
-      {/* Title */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div>
+      {/* Title & Tabs */}
+      <div className="page-header-row">
+        <div className="page-title-block">
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Wrench size={24} color="#34d399" />
-            <h1 style={{ fontSize: '1.8rem', fontWeight: 800, letterSpacing: '-0.02em' }}>
+            <h1 style={{ fontSize: 'clamp(1.4rem, 2.5vw, 1.8rem)', fontWeight: 800, letterSpacing: '-0.02em' }}>
               Module E: <span className="gradient-text-emerald">Maintenance Expert System</span>
             </h1>
           </div>
-          <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
+          <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)' }}>
             Forward-chaining diagnostic rule engine with explicit rule firing trace and Knowledge Acquisition.
           </p>
         </div>
 
         {/* Tab switch */}
-        <div style={{ display: 'flex', gap: '8px' }}>
+        <div className="tabs-scroll-container">
           <button
             onClick={() => setActiveTab('diagnose')}
             className={activeTab === 'diagnose' ? 'btn-primary' : 'btn-secondary'}
-            style={{ fontSize: '0.8rem' }}
+            style={{ fontSize: '0.78rem' }}
           >
             Interactive Diagnosis
           </button>
           <button
             onClick={() => setActiveTab('acquire')}
             className={activeTab === 'acquire' ? 'btn-primary' : 'btn-secondary'}
-            style={{ fontSize: '0.8rem' }}
+            style={{ fontSize: '0.78rem' }}
           >
             Knowledge Acquisition
           </button>
           <button
             onClick={() => setActiveTab('rules')}
             className={activeTab === 'rules' ? 'btn-primary' : 'btn-secondary'}
-            style={{ fontSize: '0.8rem' }}
+            style={{ fontSize: '0.78rem' }}
           >
-            Rule Base Explorer ({rules.length})
+            Rule Base ({rules.length})
           </button>
         </div>
       </div>
 
       {/* TAB 1: INTERACTIVE DIAGNOSIS */}
       {activeTab === 'diagnose' && (
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '28px', alignItems: 'start' }}>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 340px), 1fr))',
+            gap: '24px',
+            alignItems: 'start',
+          }}
+        >
           {/* Left: Symptom Selector by Categories */}
-          <div className="glass-panel" style={{ padding: '24px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+          <div className="glass-panel" style={{ padding: 'clamp(16px, 3vw, 24px)' }}>
+            <div className="page-header-row" style={{ marginBottom: '16px' }}>
               <div>
-                <h3 style={{ fontSize: '1.1rem', fontWeight: 700 }}>Robot Telemetry Symptoms</h3>
+                <h3 style={{ fontSize: '1.05rem', fontWeight: 700 }}>Robot Telemetry Symptoms</h3>
                 <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
                   Select observed conditions to fire the forward-chaining diagnostic engine.
                 </p>
               </div>
-              <button onClick={() => setSelectedSymptoms(new Set())} className="btn-secondary" style={{ fontSize: '0.75rem', padding: '4px 10px' }}>
+              <button
+                onClick={() => setSelectedSymptoms(new Set())}
+                className="btn-secondary"
+                style={{ fontSize: '0.75rem', padding: '5px 10px' }}
+              >
                 Clear All
               </button>
             </div>
@@ -186,7 +192,7 @@ export default function ExpertSystemPage() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               {SYMPTOM_CATEGORIES.map((cat) => (
                 <div key={cat.name} style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  <div style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--cyan)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--cyan)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                     {cat.name}
                   </div>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
@@ -199,13 +205,13 @@ export default function ExpertSystemPage() {
                           key={sym}
                           onClick={() => toggleSymptom(sym)}
                           style={{
-                            padding: '6px 12px',
+                            padding: '7px 12px',
                             borderRadius: '6px',
                             backgroundColor: isSelected ? 'rgba(6, 182, 212, 0.2)' : 'rgba(255,255,255,0.03)',
                             border: isSelected ? '1px solid var(--cyan)' : '1px solid var(--border-subtle)',
                             color: isSelected ? '#ffffff' : 'var(--text-secondary)',
                             fontWeight: isSelected ? 600 : 500,
-                            fontSize: '0.8rem',
+                            fontSize: '0.78rem',
                             cursor: 'pointer',
                             display: 'flex',
                             alignItems: 'center',
@@ -213,12 +219,14 @@ export default function ExpertSystemPage() {
                             transition: 'all 0.15s ease',
                           }}
                         >
-                          <span style={{
-                            width: '8px',
-                            height: '8px',
-                            borderRadius: '50%',
-                            backgroundColor: isSelected ? 'var(--cyan)' : 'rgba(255,255,255,0.2)',
-                          }} />
+                          <span
+                            style={{
+                              width: '8px',
+                              height: '8px',
+                              borderRadius: '50%',
+                              backgroundColor: isSelected ? 'var(--cyan)' : 'rgba(255,255,255,0.2)',
+                            }}
+                          />
                           <span style={{ textTransform: 'capitalize' }}>{cleanName}</span>
                         </button>
                       );
@@ -231,10 +239,10 @@ export default function ExpertSystemPage() {
             <button
               onClick={handleRunDiagnosis}
               className="btn-primary"
-              style={{ width: '100%', marginTop: '24px', justifyContent: 'center' }}
+              style={{ width: '100%', marginTop: '22px', justifyContent: 'center', padding: '12px' }}
             >
               <Play size={16} />
-              <span>Run Forward-Chaining Diagnostics ({selectedSymptoms.size} Active Symptoms)</span>
+              <span>Run Forward-Chaining Diagnostics ({selectedSymptoms.size} Active)</span>
             </button>
           </div>
 
@@ -244,7 +252,7 @@ export default function ExpertSystemPage() {
             <div
               className="glass-panel"
               style={{
-                padding: '24px',
+                padding: 'clamp(18px, 3vw, 24px)',
                 borderLeft: result && result.diagnoses.length > 0 ? '4px solid #f43f5e' : '4px solid #10b981',
               }}
             >
@@ -258,7 +266,7 @@ export default function ExpertSystemPage() {
                     <div
                       key={diag}
                       style={{
-                        fontSize: '1.35rem',
+                        fontSize: 'clamp(1.1rem, 2.5vw, 1.35rem)',
                         fontWeight: 800,
                         color: '#fb7185',
                         display: 'flex',
@@ -266,23 +274,23 @@ export default function ExpertSystemPage() {
                         gap: '8px',
                       }}
                     >
-                      <ShieldAlert size={22} color="#f43f5e" />
+                      <ShieldAlert size={22} color="#f43f5e" style={{ flexShrink: 0 }} />
                       <span>{diag.replace('diagnosis:', '').replace(/_/g, ' ').toUpperCase()}</span>
                     </div>
                   ))}
                 </div>
               ) : (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#34d399', fontSize: '1.2rem', fontWeight: 700 }}>
-                  <CheckCircle2 size={22} />
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#34d399', fontSize: '1.1rem', fontWeight: 700 }}>
+                  <CheckCircle2 size={22} style={{ flexShrink: 0 }} />
                   <span>NO FAULT DETECTED (NOMINAL)</span>
                 </div>
               )}
             </div>
 
             {/* Fired Rule Explanation Trace */}
-            <div className="glass-panel" style={{ padding: '20px', maxHeight: '340px', overflowY: 'auto' }}>
+            <div className="glass-panel" style={{ padding: 'clamp(16px, 3vw, 20px)', maxHeight: '340px', overflowY: 'auto' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
-                <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-muted)' }}>
+                <div style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-muted)' }}>
                   FORWARD-CHAINING EXPLANATION TRACE
                 </div>
                 <span className="badge badge-cyan">{result?.trace.length || 0} Rules Fired</span>
@@ -300,7 +308,7 @@ export default function ExpertSystemPage() {
                         border: '1px solid var(--border-subtle)',
                       }}
                     >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px', flexWrap: 'wrap' }}>
                         <span className="badge badge-amber" style={{ fontSize: '0.68rem' }}>
                           Rule {step.ruleId} Fired
                         </span>
@@ -315,7 +323,7 @@ export default function ExpertSystemPage() {
                   ))}
                 </div>
               ) : (
-                <div style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+                <div style={{ color: 'var(--text-muted)', fontSize: '0.82rem' }}>
                   No rules matched the current symptom facts.
                 </div>
               )}
@@ -359,36 +367,38 @@ export default function ExpertSystemPage() {
 
       {/* TAB 2: KNOWLEDGE ACQUISITION */}
       {activeTab === 'acquire' && (
-        <div className="glass-panel" style={{ padding: '28px', maxWidth: '800px' }}>
+        <div className="glass-panel" style={{ padding: 'clamp(18px, 3vw, 28px)', maxWidth: '800px', width: '100%' }}>
           <div style={{ marginBottom: '20px' }}>
-            <h3 style={{ fontSize: '1.2rem', fontWeight: 700 }}>Dynamic Knowledge Acquisition</h3>
-            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+            <h3 style={{ fontSize: '1.15rem', fontWeight: 700 }}>Dynamic Knowledge Acquisition</h3>
+            <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
               Add new diagnostic rules to the expert system on the fly without modifying any code.
             </p>
           </div>
 
           {successMessage && (
-            <div style={{
-              padding: '12px 16px',
-              borderRadius: '8px',
-              backgroundColor: 'rgba(16, 185, 129, 0.15)',
-              border: '1px solid rgba(16, 185, 129, 0.3)',
-              color: '#34d399',
-              fontSize: '0.85rem',
-              fontWeight: 600,
-              marginBottom: '20px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-            }}>
+            <div
+              style={{
+                padding: '12px 16px',
+                borderRadius: '8px',
+                backgroundColor: 'rgba(16, 185, 129, 0.15)',
+                border: '1px solid rgba(16, 185, 129, 0.3)',
+                color: '#34d399',
+                fontSize: '0.82rem',
+                fontWeight: 600,
+                marginBottom: '20px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+              }}
+            >
               <CheckCircle2 size={16} />
               <span>{successMessage}</span>
             </div>
           )}
 
-          <form onSubmit={handleAddCustomRule} style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+          <form onSubmit={handleAddCustomRule} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <div>
-              <label style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '6px' }}>
+              <label style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '6px' }}>
                 Rule Identifier
               </label>
               <input
@@ -398,7 +408,7 @@ export default function ExpertSystemPage() {
                 placeholder="e.g. R99"
                 style={{
                   width: '100%',
-                  padding: '10px 14px',
+                  padding: '10px 12px',
                   borderRadius: '6px',
                   backgroundColor: 'rgba(255,255,255,0.04)',
                   border: '1px solid var(--border-subtle)',
@@ -410,7 +420,7 @@ export default function ExpertSystemPage() {
             </div>
 
             <div>
-              <label style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '6px' }}>
+              <label style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '6px' }}>
                 IF Conditions (comma-separated facts)
               </label>
               <input
@@ -420,7 +430,7 @@ export default function ExpertSystemPage() {
                 placeholder="symptom:motor_current_high, symptom:battery_voltage_low"
                 style={{
                   width: '100%',
-                  padding: '10px 14px',
+                  padding: '10px 12px',
                   borderRadius: '6px',
                   backgroundColor: 'rgba(255,255,255,0.04)',
                   border: '1px solid var(--border-subtle)',
@@ -432,7 +442,7 @@ export default function ExpertSystemPage() {
             </div>
 
             <div>
-              <label style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '6px' }}>
+              <label style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '6px' }}>
                 NOT Conditions (optional negative conditions)
               </label>
               <input
@@ -442,7 +452,7 @@ export default function ExpertSystemPage() {
                 placeholder="symptom:sensor_calibration_expired"
                 style={{
                   width: '100%',
-                  padding: '10px 14px',
+                  padding: '10px 12px',
                   borderRadius: '6px',
                   backgroundColor: 'rgba(255,255,255,0.04)',
                   border: '1px solid var(--border-subtle)',
@@ -454,7 +464,7 @@ export default function ExpertSystemPage() {
             </div>
 
             <div>
-              <label style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '6px' }}>
+              <label style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '6px' }}>
                 THEN Fact (Asserted diagnosis or derived fact)
               </label>
               <input
@@ -464,7 +474,7 @@ export default function ExpertSystemPage() {
                 placeholder="diagnosis:inverter_fault"
                 style={{
                   width: '100%',
-                  padding: '10px 14px',
+                  padding: '10px 12px',
                   borderRadius: '6px',
                   backgroundColor: 'rgba(255,255,255,0.04)',
                   border: '1px solid var(--border-subtle)',
@@ -476,7 +486,7 @@ export default function ExpertSystemPage() {
             </div>
 
             <div>
-              <label style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '6px' }}>
+              <label style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '6px' }}>
                 Engineer&apos;s Domain Explanation
               </label>
               <textarea
@@ -486,7 +496,7 @@ export default function ExpertSystemPage() {
                 placeholder="Detailed rationale explaining why this diagnosis was triggered."
                 style={{
                   width: '100%',
-                  padding: '10px 14px',
+                  padding: '10px 12px',
                   borderRadius: '6px',
                   backgroundColor: 'rgba(255,255,255,0.04)',
                   border: '1px solid var(--border-subtle)',
@@ -496,7 +506,7 @@ export default function ExpertSystemPage() {
               />
             </div>
 
-            <button type="submit" className="btn-primary" style={{ alignSelf: 'flex-start', marginTop: '8px' }}>
+            <button type="submit" className="btn-primary" style={{ alignSelf: 'flex-start', marginTop: '6px' }}>
               <PlusCircle size={16} />
               <span>Compile Rule into Knowledge Base</span>
             </button>
@@ -507,17 +517,17 @@ export default function ExpertSystemPage() {
       {/* TAB 3: RULE BASE EXPLORER */}
       {activeTab === 'rules' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ fontSize: '1.15rem', fontWeight: 700 }}>Active Rule Base ({rules.length} Rules Loaded)</h3>
+          <div className="page-header-row">
+            <h3 style={{ fontSize: '1.1rem', fontWeight: 700 }}>Active Rule Base ({rules.length} Rules Loaded)</h3>
             <span className="badge badge-emerald">In-Memory Engine Ready</span>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '16px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))', gap: '14px' }}>
             {rules.map((rule) => (
               <div
                 key={rule.id}
                 className="glass-panel"
-                style={{ padding: '18px', display: 'flex', flexDirection: 'column', gap: '8px' }}
+                style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span className="badge badge-cyan">{rule.id}</span>

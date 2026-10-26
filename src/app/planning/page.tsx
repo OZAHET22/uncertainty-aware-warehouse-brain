@@ -8,13 +8,9 @@ import {
   RotateCcw,
   SkipForward,
   SkipBack,
-  Layers,
   Wrench,
   AlertOctagon,
   CheckCircle2,
-  Sparkles,
-  ChevronRight,
-  Info,
 } from 'lucide-react';
 import {
   WorldState,
@@ -174,10 +170,8 @@ export default function PlanningPage() {
   // Construct visual stacks for the visual canvas
   const renderVisualStacks = () => {
     const onMap = simulatedState.on;
-    // Find all base blocks on PALLET
     const palletBlocks = Object.keys(onMap).filter((b) => onMap[b] === 'PALLET');
 
-    // Build tower columns
     const columns: string[][] = [];
     for (const base of palletBlocks) {
       const col = [base];
@@ -195,7 +189,17 @@ export default function PlanningPage() {
     }
 
     return (
-      <div style={{ display: 'flex', gap: '32px', alignItems: 'flex-end', minHeight: '160px', paddingBottom: '12px' }}>
+      <div
+        style={{
+          display: 'flex',
+          gap: 'clamp(14px, 3.5vw, 32px)',
+          alignItems: 'flex-end',
+          minHeight: '160px',
+          paddingBottom: '12px',
+          overflowX: 'auto',
+          maxWidth: '100%',
+        }}
+      >
         {columns.map((col, cIdx) => (
           <div key={cIdx} style={{ display: 'flex', flexDirection: 'column-reverse', gap: '6px', alignItems: 'center' }}>
             {col.map((block) => {
@@ -204,8 +208,8 @@ export default function PlanningPage() {
                 <div
                   key={block}
                   style={{
-                    width: '64px',
-                    height: '48px',
+                    width: 'clamp(48px, 12vw, 64px)',
+                    height: 'clamp(38px, 10vw, 48px)',
                     background: colStyle.bg,
                     border: `2px solid ${colStyle.border}`,
                     borderRadius: '8px',
@@ -213,7 +217,7 @@ export default function PlanningPage() {
                     alignItems: 'center',
                     justifyContent: 'center',
                     fontWeight: 800,
-                    fontSize: '1.2rem',
+                    fontSize: 'clamp(1rem, 2.5vw, 1.2rem)',
                     color: colStyle.text,
                     boxShadow: '0 6px 14px rgba(0,0,0,0.4)',
                     transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
@@ -239,28 +243,28 @@ export default function PlanningPage() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
-      {/* Title */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div>
+      {/* Title & Presets Header */}
+      <div className="page-header-row">
+        <div className="page-title-block">
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Boxes size={24} color="var(--cyan)" />
-            <h1 style={{ fontSize: '1.8rem', fontWeight: 800, letterSpacing: '-0.02em' }}>
+            <h1 style={{ fontSize: 'clamp(1.4rem, 2.5vw, 1.8rem)', fontWeight: 800, letterSpacing: '-0.02em' }}>
               Module A: <span className="gradient-text-cyan">Stack the Pallet (Planning Studio)</span>
             </h1>
           </div>
-          <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
+          <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)' }}>
             Comprehensive STRIPS Blocks World Planner featuring Goal Stack, Nonlinear (POP), Hierarchical (HTN), and Reactive Execution.
           </p>
         </div>
 
         {/* Preset Selector */}
-        <div style={{ display: 'flex', gap: '8px' }}>
+        <div className="tabs-scroll-container">
           {PRESETS.map((p, idx) => (
             <button
               key={p.name}
               onClick={() => handleSelectPreset(idx)}
               className={selectedPreset === idx ? 'btn-primary' : 'btn-secondary'}
-              style={{ fontSize: '0.78rem', padding: '6px 12px' }}
+              style={{ fontSize: '0.78rem', padding: '7px 12px' }}
             >
               {p.name}
             </button>
@@ -269,28 +273,30 @@ export default function PlanningPage() {
       </div>
 
       {/* Visual Blocks World Simulation Stage */}
-      <div className="glass-panel" style={{ padding: '24px', position: 'relative' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+      <div className="glass-panel" style={{ padding: 'clamp(16px, 3vw, 24px)', position: 'relative' }}>
+        <div className="page-header-row" style={{ marginBottom: '16px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <span className="badge badge-cyan">Visual Blocks World</span>
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+            <span style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
               Step {currentStepIndex} of {currentPlan.length}
             </span>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              padding: '6px 14px',
-              borderRadius: '6px',
-              backgroundColor: simulatedState.holding ? 'rgba(245, 158, 11, 0.15)' : 'rgba(255, 255, 255, 0.05)',
-              border: simulatedState.holding ? '1px solid rgba(245, 158, 11, 0.3)' : '1px solid var(--border-subtle)',
-            }}>
-              <Wrench size={16} color={simulatedState.holding ? '#fbbf24' : '#94a3b8'} />
-              <span style={{ fontSize: '0.8rem', fontWeight: 600, color: simulatedState.holding ? '#fbbf24' : 'var(--text-secondary)' }}>
-                GRIPPER ARM: {simulatedState.holding ? `HOLDING [${simulatedState.holding}]` : 'EMPTY'}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '6px 12px',
+                borderRadius: '6px',
+                backgroundColor: simulatedState.holding ? 'rgba(245, 158, 11, 0.15)' : 'rgba(255, 255, 255, 0.05)',
+                border: simulatedState.holding ? '1px solid rgba(245, 158, 11, 0.3)' : '1px solid var(--border-subtle)',
+              }}
+            >
+              <Wrench size={15} color={simulatedState.holding ? '#fbbf24' : '#94a3b8'} />
+              <span style={{ fontSize: '0.78rem', fontWeight: 600, color: simulatedState.holding ? '#fbbf24' : 'var(--text-secondary)' }}>
+                GRIPPER: {simulatedState.holding ? `[${simulatedState.holding}]` : 'EMPTY'}
               </span>
             </div>
 
@@ -304,46 +310,53 @@ export default function PlanningPage() {
         </div>
 
         {/* The Pallet Stage Canvas */}
-        <div style={{
-          backgroundColor: '#0a0e17',
-          borderRadius: '10px',
-          border: '1px solid rgba(255, 255, 255, 0.08)',
-          padding: '36px 36px 12px 36px',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}>
-          {/* Animated Gripper Arm representation */}
-          <div style={{
-            width: '180px',
-            height: '42px',
-            backgroundColor: 'rgba(30, 41, 59, 0.8)',
-            border: '2px solid rgba(255,255,255,0.15)',
-            borderRadius: '6px',
+        <div
+          style={{
+            backgroundColor: '#0a0e17',
+            borderRadius: '10px',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            padding: 'clamp(20px, 4vw, 36px) clamp(16px, 3vw, 36px) 12px clamp(16px, 3vw, 36px)',
             display: 'flex',
+            flexDirection: 'column',
             alignItems: 'center',
-            justifyContent: 'center',
-            marginBottom: '24px',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.5)',
-          }}>
+            overflowX: 'auto',
+          }}
+        >
+          {/* Animated Gripper Arm representation */}
+          <div
+            style={{
+              width: '160px',
+              height: '38px',
+              backgroundColor: 'rgba(30, 41, 59, 0.8)',
+              border: '2px solid rgba(255,255,255,0.15)',
+              borderRadius: '6px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginBottom: '20px',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.5)',
+            }}
+          >
             {simulatedState.holding ? (
-              <div style={{
-                width: '46px',
-                height: '34px',
-                background: BLOCK_COLORS[simulatedState.holding]?.bg || '#475569',
-                border: '2px solid #fff',
-                borderRadius: '6px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontWeight: 800,
-                color: '#fff',
-                fontSize: '1rem',
-              }}>
+              <div
+                style={{
+                  width: '42px',
+                  height: '30px',
+                  background: BLOCK_COLORS[simulatedState.holding]?.bg || '#475569',
+                  border: '2px solid #fff',
+                  borderRadius: '5px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontWeight: 800,
+                  color: '#fff',
+                  fontSize: '0.95rem',
+                }}
+              >
                 {simulatedState.holding}
               </div>
             ) : (
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+              <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
                 [ GRIPPER READY ]
               </span>
             )}
@@ -353,46 +366,60 @@ export default function PlanningPage() {
           {renderVisualStacks()}
 
           {/* Pallet Bed */}
-          <div style={{
-            width: '100%',
-            height: '16px',
-            background: 'linear-gradient(90deg, #334155 0%, #475569 50%, #334155 100%)',
-            borderRadius: '4px',
-            marginTop: '8px',
-            borderBottom: '4px solid #1e293b',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-            <span style={{ fontSize: '0.65rem', color: '#cbd5e1', letterSpacing: '0.2em', fontWeight: 700 }}>
-              PALLET PLATFORM BASE
-            </span>
-          </div>
+          <div
+            style={{
+              width: '100%',
+              minWidth: '240px',
+              height: '14px',
+              background: 'linear-gradient(90deg, #334155 0%, #475569 50%, #334155 100%)',
+              borderRadius: '4px',
+              boxShadow: '0 4px 10px rgba(0,0,0,0.6)',
+              marginTop: '4px',
+            }}
+          />
         </div>
 
-        {/* Step Playback Controls */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '16px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <button onClick={resetPlayback} className="btn-secondary" title="Reset to start">
-              <RotateCcw size={16} />
-              <span>Reset</span>
-            </button>
-            <button onClick={stepBackward} disabled={currentStepIndex === 0} className="btn-secondary">
-              <SkipBack size={16} />
-              <span>Prev</span>
-            </button>
-            <button onClick={() => setIsPlaying(!isPlaying)} className="btn-primary">
-              <Play size={16} />
+        {/* Playback Controls Bar */}
+        <div className="page-header-row" style={{ marginTop: '18px' }}>
+          <div className="playback-controls-bar">
+            <button
+              onClick={() => setIsPlaying(!isPlaying)}
+              className="btn-primary"
+              style={{ fontSize: '0.8rem', padding: '8px 14px' }}
+            >
+              <Play size={15} />
               <span>{isPlaying ? 'Pause' : 'Auto Play'}</span>
             </button>
-            <button onClick={stepForward} disabled={currentStepIndex >= currentPlan.length} className="btn-secondary">
-              <span>Next</span>
-              <SkipForward size={16} />
+            <button
+              onClick={stepBackward}
+              disabled={currentStepIndex === 0}
+              className="btn-secondary"
+              style={{ fontSize: '0.8rem', padding: '8px 12px' }}
+              title="Step Backward"
+            >
+              <SkipBack size={15} />
+            </button>
+            <button
+              onClick={resetPlayback}
+              className="btn-secondary"
+              style={{ fontSize: '0.8rem', padding: '8px 12px' }}
+              title="Reset to Initial State"
+            >
+              <RotateCcw size={15} />
+            </button>
+            <button
+              onClick={stepForward}
+              disabled={currentStepIndex >= currentPlan.length}
+              className="btn-secondary"
+              style={{ fontSize: '0.8rem', padding: '8px 12px' }}
+              title="Step Forward"
+            >
+              <SkipForward size={15} />
             </button>
           </div>
 
-          <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-            Next Action: <strong style={{ color: 'var(--cyan)' }}>
+          <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
+            Next: <strong style={{ color: 'var(--cyan)' }}>
               {currentStepIndex < currentPlan.length ? currentPlan[currentStepIndex].join(' ') : '(Plan Completed)'}
             </strong>
           </div>
@@ -400,8 +427,8 @@ export default function PlanningPage() {
       </div>
 
       {/* 4 Planning Algorithm Tabs */}
-      <div className="glass-panel" style={{ padding: '24px' }}>
-        <div style={{ display: 'flex', gap: '12px', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '16px', marginBottom: '20px' }}>
+      <div className="glass-panel" style={{ padding: 'clamp(16px, 3vw, 24px)' }}>
+        <div className="tabs-scroll-container" style={{ borderBottom: '1px solid var(--border-subtle)', paddingBottom: '14px', marginBottom: '20px' }}>
           <button
             onClick={() => setActiveTab('gs')}
             className={activeTab === 'gs' ? 'btn-primary' : 'btn-secondary'}
@@ -431,9 +458,9 @@ export default function PlanningPage() {
         {/* TAB 1: GOAL STACK */}
         {activeTab === 'gs' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div className="page-header-row">
               <div>
-                <h3 style={{ fontSize: '1.1rem', fontWeight: 700 }}>Extended Goal Stack Planning Plan</h3>
+                <h3 style={{ fontSize: '1.05rem', fontWeight: 700 }}>Extended Goal Stack Planning Plan</h3>
                 <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
                   Constructs goal towers bottom-up and safely clears blocking obstacles to resolve the Sussman Anomaly.
                 </p>
@@ -441,12 +468,12 @@ export default function PlanningPage() {
               <span className="badge badge-cyan">{currentPlan.length} Steps Generated</span>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '10px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 160px), 1fr))', gap: '10px' }}>
               {currentPlan.map((action, i) => (
                 <div
                   key={i}
                   style={{
-                    padding: '10px 14px',
+                    padding: '10px 12px',
                     borderRadius: '8px',
                     backgroundColor: i === currentStepIndex ? 'rgba(6, 182, 212, 0.2)' : 'rgba(255, 255, 255, 0.03)',
                     border: i === currentStepIndex ? '1px solid var(--cyan)' : '1px solid var(--border-subtle)',
@@ -455,10 +482,10 @@ export default function PlanningPage() {
                     gap: '8px',
                   }}
                 >
-                  <span style={{ fontSize: '0.75rem', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
+                  <span style={{ fontSize: '0.72rem', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
                     #{i + 1}
                   </span>
-                  <span style={{ fontSize: '0.85rem', fontWeight: 600 }}>
+                  <span style={{ fontSize: '0.82rem', fontWeight: 600 }}>
                     {action.join(' ')}
                   </span>
                 </div>
@@ -466,17 +493,20 @@ export default function PlanningPage() {
             </div>
 
             <div style={{ marginTop: '12px' }}>
-              <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)', marginBottom: '6px' }}>
+              <div style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-muted)', marginBottom: '6px' }}>
                 EXPLANATION TRACE
               </div>
-              <div style={{
-                backgroundColor: 'rgba(0, 0, 0, 0.3)',
-                padding: '12px',
-                borderRadius: '8px',
-                fontFamily: 'var(--font-mono)',
-                fontSize: '0.78rem',
-                color: 'var(--text-secondary)',
-              }}>
+              <div
+                style={{
+                  backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                  padding: '12px',
+                  borderRadius: '8px',
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '0.76rem',
+                  color: 'var(--text-secondary)',
+                  overflowX: 'auto',
+                }}
+              >
                 {planTrace.map((line, i) => (
                   <div key={i}>{line}</div>
                 ))}
@@ -489,35 +519,33 @@ export default function PlanningPage() {
         {activeTab === 'pop' && popResult && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
             <div>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 700 }}>Partial-Order Planning (POP)</h3>
+              <h3 style={{ fontSize: '1.05rem', fontWeight: 700 }}>Partial-Order Planning (POP)</h3>
               <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
                 Identifies independent subgoals and organizes executable actions into parallel layers.
               </p>
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <h4 style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--cyan)' }}>
+              <h4 style={{ fontSize: '0.88rem', fontWeight: 600, color: 'var(--cyan)' }}>
                 Parallel Executable Layers ({popResult.parallelLayers.length} Layers)
               </h4>
               {popResult.parallelLayers.map((layer: ActionTuple[], lIdx: number) => (
                 <div
                   key={lIdx}
+                  className="page-header-row"
                   style={{
-                    padding: '14px 18px',
+                    padding: '12px 16px',
                     borderRadius: '8px',
                     backgroundColor: 'rgba(255, 255, 255, 0.03)',
                     border: '1px solid var(--border-subtle)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
                   }}
                 >
-                  <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)' }}>
+                  <span style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-muted)' }}>
                     LAYER {lIdx + 1}
                   </span>
-                  <div style={{ display: 'flex', gap: '12px' }}>
+                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                     {layer.map((act, aIdx) => (
-                      <span key={aIdx} className="badge badge-cyan" style={{ fontSize: '0.8rem', padding: '4px 10px' }}>
+                      <span key={aIdx} className="badge badge-cyan" style={{ fontSize: '0.76rem', padding: '4px 8px' }}>
                         {act.join(' ')}
                       </span>
                     ))}
@@ -532,7 +560,7 @@ export default function PlanningPage() {
         {activeTab === 'htn' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
             <div>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 700 }}>Hierarchical Task Network (HTN) Decomposition</h3>
+              <h3 style={{ fontSize: '1.05rem', fontWeight: 700 }}>Hierarchical Task Network (HTN) Decomposition</h3>
               <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
                 Decomposes the high-level compound task <code className="code-font" style={{ color: 'var(--cyan)' }}>LoadPallet(Pallet_A, order)</code> into primitive STRIPS operations.
               </p>
@@ -552,10 +580,10 @@ export default function PlanningPage() {
                     gap: '12px',
                   }}
                 >
-                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                  <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
                     Step {i + 1}
                   </span>
-                  <span style={{ fontSize: '0.85rem', fontWeight: 600 }}>
+                  <span style={{ fontSize: '0.82rem', fontWeight: 600 }}>
                     {act.join(' ')}
                   </span>
                 </div>
@@ -568,19 +596,29 @@ export default function PlanningPage() {
         {activeTab === 'reactive' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             <div>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 700 }}>Reactive Disturbance Recovery</h3>
+              <h3 style={{ fontSize: '1.05rem', fontWeight: 700 }}>Reactive Disturbance Recovery</h3>
               <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
                 Simulates real-world warehouse disturbances (e.g. knocked over blocks). The reactive layer detects precondition violations on the fly and inserts dynamic repairs.
               </p>
             </div>
 
             {/* Disturbance Configuration */}
-            <div style={{ display: 'flex', gap: '16px', alignItems: 'center', padding: '16px', borderRadius: '8px', backgroundColor: 'rgba(244, 63, 94, 0.08)', border: '1px solid rgba(244, 63, 94, 0.25)' }}>
-              <AlertOctagon size={24} color="#f43f5e" />
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#fb7185' }}>Simulated Disturbance Event</div>
-                <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
-                  Block <strong style={{ color: '#ffffff' }}>&apos;{disturbanceBlock}&apos;</strong> will be knocked to PALLET after original plan step <strong style={{ color: '#ffffff' }}>#{disturbanceStep + 1}</strong>.
+            <div
+              className="page-header-row"
+              style={{
+                padding: '14px',
+                borderRadius: '8px',
+                backgroundColor: 'rgba(244, 63, 94, 0.08)',
+                border: '1px solid rgba(244, 63, 94, 0.25)',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
+                <AlertOctagon size={24} color="#f43f5e" style={{ flexShrink: 0 }} />
+                <div>
+                  <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#fb7185' }}>Simulated Disturbance Event</div>
+                  <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
+                    Block <strong style={{ color: '#ffffff' }}>&apos;{disturbanceBlock}&apos;</strong> will be knocked to PALLET after original plan step <strong style={{ color: '#ffffff' }}>#{disturbanceStep + 1}</strong>.
+                  </div>
                 </div>
               </div>
 
@@ -599,7 +637,7 @@ export default function PlanningPage() {
             {/* Reactive Log Results */}
             {reactiveResult && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <h4 style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--amber)' }}>
+                <h4 style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--amber)' }}>
                   Dynamic Injected Repairs
                 </h4>
                 {reactiveResult.reactiveLog.length > 0 ? (
@@ -611,7 +649,7 @@ export default function PlanningPage() {
                         borderRadius: '6px',
                         backgroundColor: 'rgba(245, 158, 11, 0.1)',
                         border: '1px solid rgba(245, 158, 11, 0.3)',
-                        fontSize: '0.82rem',
+                        fontSize: '0.8rem',
                         color: '#fbbf24',
                         fontFamily: 'var(--font-mono)',
                       }}
@@ -620,25 +658,27 @@ export default function PlanningPage() {
                     </div>
                   ))
                 ) : (
-                  <div style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+                  <div style={{ color: 'var(--text-muted)', fontSize: '0.82rem' }}>
                     No precondition violations triggered by this disturbance configuration.
                   </div>
                 )}
 
                 <div style={{ marginTop: '12px' }}>
-                  <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)', marginBottom: '6px' }}>
+                  <div style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-muted)', marginBottom: '6px' }}>
                     EXECUTION TRACE WITH REPAIRS
                   </div>
-                  <div style={{
-                    backgroundColor: 'rgba(0, 0, 0, 0.3)',
-                    padding: '12px',
-                    borderRadius: '8px',
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: '0.76rem',
-                    color: 'var(--text-secondary)',
-                    maxHeight: '260px',
-                    overflowY: 'auto',
-                  }}>
+                  <div
+                    style={{
+                      backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                      padding: '12px',
+                      borderRadius: '8px',
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: '0.75rem',
+                      color: 'var(--text-secondary)',
+                      maxHeight: '260px',
+                      overflowY: 'auto',
+                    }}
+                  >
                     {reactiveResult.trace.map((t: string, i: number) => (
                       <div key={i} style={{ marginBottom: '4px' }}>{t}</div>
                     ))}

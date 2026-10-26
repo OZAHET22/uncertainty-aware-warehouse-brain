@@ -1,4 +1,3 @@
-// src/app/api/uncertainty/route.ts
 import { NextResponse } from 'next/server';
 import {
   evaluateAllMethods,
@@ -6,6 +5,8 @@ import {
   DISAGREEMENTS,
   SensorReading,
 } from '@/lib/uncertainty';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET() {
   const benchmarkMatrix = TEST_CASES.map((tc) => {

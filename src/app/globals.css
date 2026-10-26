@@ -29,20 +29,31 @@
 
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
+
+  /* Layout dimensions */
+  --sidebar-width: 280px;
+  --header-height: 64px;
 }
 
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  -webkit-tap-highlight-color: transparent;
 }
 
-body {
+html, body {
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
   background-color: var(--bg-primary);
   color: var(--text-primary);
   font-family: var(--font-sans);
-  min-height: 100vh;
-  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
   background-image: 
     radial-gradient(circle at 15% 20%, rgba(6, 182, 212, 0.07) 0%, transparent 40%),
     radial-gradient(circle at 85% 80%, rgba(168, 85, 247, 0.06) 0%, transparent 40%),
@@ -84,6 +95,7 @@ body {
 .glass-panel-glow {
   background: var(--bg-card);
   backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--border-glow);
   border-radius: 12px;
   box-shadow: 0 0 20px rgba(6, 182, 212, 0.15);
@@ -108,6 +120,18 @@ body {
   -webkit-text-fill-color: transparent;
 }
 
+.gradient-text-rose {
+  background: linear-gradient(135deg, #fb7185 0%, #f43f5e 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient-text-purple {
+  background: linear-gradient(135deg, #c084fc 0%, #a855f7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 .code-font {
   font-family: var(--font-mono);
 }
@@ -115,6 +139,7 @@ body {
 /* Interactive elements */
 button, input, select, textarea {
   font-family: inherit;
+  font-size: inherit;
 }
 
 .btn-primary {
@@ -128,9 +153,12 @@ button, input, select, textarea {
   cursor: pointer;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   transition: all 0.2s ease;
   box-shadow: 0 4px 14px 0 rgba(6, 182, 212, 0.35);
+  user-select: none;
+  white-space: nowrap;
 }
 
 .btn-primary:hover {
@@ -154,8 +182,11 @@ button, input, select, textarea {
   cursor: pointer;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   transition: all 0.2s ease;
+  user-select: none;
+  white-space: nowrap;
 }
 
 .btn-secondary:hover {
@@ -173,6 +204,7 @@ button, input, select, textarea {
   font-weight: 600;
   letter-spacing: 0.03em;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .badge-cyan {
@@ -218,4 +250,264 @@ button, input, select, textarea {
   background-color: var(--emerald);
   box-shadow: 0 0 8px var(--emerald);
   animation: pulseGlow 2s infinite ease-in-out;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   RESPONSIVE DESIGN SYSTEM & MOBILE UTILITIES
+   ============================================================ */
+
+/* App Shell Layout */
+.app-layout-container {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.app-main-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.app-content-area {
+  flex: 1;
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 32px;
+}
+
+/* Sidebar & Drawer */
+.sidebar-container {
+  width: var(--sidebar-width);
+  min-width: var(--sidebar-width);
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  background-color: rgba(10, 14, 23, 0.95);
+  border-right: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  padding: 24px 16px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  z-index: 50;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Sidebar Backdrop Overlay on Mobile */
+.sidebar-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 49;
+  transition: opacity 0.3s ease;
+}
+
+/* Header Styles */
+.app-header {
+  height: var(--header-height);
+  border-bottom: 1px solid var(--border-subtle);
+  background-color: rgba(7, 9, 14, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+
+.mobile-nav-toggle-btn {
+  display: none;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  border-radius: 8px;
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.mobile-nav-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(6, 182, 212, 0.4);
+}
+
+/* Responsive Page Header */
+.page-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.page-title-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Horizontally Scrollable Tab Bar for All Devices */
+.tabs-scroll-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  max-width: 100%;
+  padding-bottom: 4px;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+
+.tabs-scroll-container::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* Responsive Tables */
+.table-scroll-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 8px;
+  border: 1px solid var(--border-subtle);
+  background: rgba(10, 14, 23, 0.4);
+}
+
+.table-scroll-wrapper table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px; /* guarantees readability without crushing columns */
+}
+
+/* Playback Control Bar */
+.playback-controls-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Touch Friendly Targets */
+@media (hover: none) and (pointer: coarse) {
+  button, .btn-primary, .btn-secondary, a {
+    min-height: 42px;
+  }
+}
+
+/* ============================================================
+   RESPONSIVE BREAKPOINTS
+   ============================================================ */
+
+/* Tablet & Mobile Screens (< 1024px) */
+@media (max-width: 1023px) {
+  :root {
+    --header-height: 58px;
+  }
+
+  .sidebar-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 290px;
+    max-width: 85vw;
+    height: 100vh;
+    height: 100dvh;
+    transform: translateX(-100%);
+    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.8);
+    z-index: 100;
+  }
+
+  .sidebar-container.open {
+    transform: translateX(0);
+  }
+
+  .sidebar-backdrop.open {
+    display: block;
+    opacity: 1;
+    z-index: 99;
+  }
+
+  .mobile-nav-toggle-btn {
+    display: inline-flex;
+  }
+
+  .app-content-area {
+    padding: 20px 16px;
+  }
+
+  .app-header {
+    padding: 0 16px;
+  }
+
+  .header-mission-title {
+    display: none;
+  }
+}
+
+/* Mobile Screens (< 640px) */
+@media (max-width: 639px) {
+  .app-content-area {
+    padding: 16px 12px;
+  }
+
+  .page-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .page-title-block h1 {
+    font-size: 1.45rem !important;
+  }
+
+  .tabs-scroll-container {
+    width: 100%;
+  }
+
+  .tabs-scroll-container button {
+    flex-shrink: 0;
+    padding: 8px 12px !important;
+    font-size: 0.78rem !important;
+  }
+
+  .header-telemetry-pill {
+    display: none;
+  }
+
+  .header-telemetry-battery {
+    display: flex;
+  }
+
+  .header-clock {
+    display: none;
+  }
+
+  .playback-controls-bar {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .playback-controls-bar button {
+    flex: 1;
+    padding: 8px !important;
+    font-size: 0.75rem !important;
+  }
 }

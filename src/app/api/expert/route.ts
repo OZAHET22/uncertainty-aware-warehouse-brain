@@ -1,6 +1,7 @@
-// src/app/api/expert/route.ts
 import { NextResponse } from 'next/server';
 import { runForwardChaining, DEFAULT_RULES, Rule } from '@/lib/expertSystem';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET() {
   return NextResponse.json({
